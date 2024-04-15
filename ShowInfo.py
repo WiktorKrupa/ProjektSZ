@@ -6,6 +6,10 @@ from Models.TracksModel import Tracks
 from Models.DeckModel import Deck
 from Models.PlywoodModel import Plywood
 from ViewModels.TableDisplay import create_table
+from ViewModels.GetInfoVM import MRPApp
+import tkinter as tk
+from tkinter import messagebox
+
 
 my_plywood = Plywood(bomLevel = 2, batchSize = 14, leadTime = 1, inStock = 4, quantity = 1)
 
@@ -17,7 +21,17 @@ my_skateboard = Skateboard(bomLevel = 0, batchSize = 10, leadTime = 2, inStock =
 
 my_skateboard.display_info()
 
+
+root = tk.Tk()
+root.geometry("400x200")  
+app = MRPApp(root)
+root.mainloop()
+#root.destroy()
+
+
 create_table()
+
+
 
 
 

@@ -9,6 +9,8 @@ from ViewModels.TableDisplay import create_table
 from ViewModels.GetInfoVM import MRPApp
 import tkinter as tk
 from tkinter import messagebox
+from ViewModels .PrettyTableVM import create_table
+from ViewModels import PrettyTableVM
 
 
 my_plywood = Plywood(bomLevel = 2, batchSize = 14, leadTime = 1, inStock = 4, quantity = 1)
@@ -29,7 +31,7 @@ root.mainloop()
 #root.destroy()
 
 
-create_table()
+PrettyTableVM.create_table()
 
 
 

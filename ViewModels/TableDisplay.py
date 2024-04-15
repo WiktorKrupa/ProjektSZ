@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 
-# tworzenie tablicy, docelowo będą przekazywane gotowe dane
 def create_table():
     rows = ["Okres", "Dane produkcyjne", "Całkowite zapotrzebowanie", "Planowane przyjęcia",
             "Przewidywane na stanie", "Zapotrzebowanie netto", "Planowane zamówienia", "Planowane przyjęcie zamówień"]
@@ -15,13 +14,13 @@ def create_table():
         "Planowane przyjęcie zamówień": [0] * 6
     }
 
-    # Dane do tablicy
     cell_text = []
-    for row in rows:
-        cell_text.append([row] + [str(data[row][i]) for i in range(6)])
+    for row in rows[1:]:  # Skip the first row label
+        cell_text.append([str(data[row][i]) for i in range(6)])
 
     plt.figure(figsize=(10, 4))
-    plt.table(cellText=cell_text, loc='center', cellLoc='center', rowLabels=rows, colLabels=[""] + list(range(1, 7)))
+    plt.table(cellText=cell_text, loc='center', cellLoc='center', rowLabels=rows[1:], colLabels=list(range(1, 7)))
     plt.axis('off')
     plt.show()
+
 

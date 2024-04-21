@@ -2,7 +2,7 @@
 import matplotlib.pyplot as plt
 
 #from ViewModels.TableDisplay import create_table
-from ViewModels.GetInfoVM import MRPApp
+#from ViewModels.GetInfoVM import MRPApp
 import tkinter as tk
 from tkinter import messagebox
 #from ViewModels .PrettyTableVM import create_table

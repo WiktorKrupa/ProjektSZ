@@ -7,7 +7,7 @@ from abc import ABC, abstractmethod
 
 class Skateboard(Component):
     def __init__(self, bomLevel, batchSize, leadTime, inStock, quantity, wheels, tracks, deck, plywood):
-        self.bom = bomLevel
+        self.bomLevel= bomLevel
         self.batchSize = batchSize
         self.leadTime = leadTime
         self.inStock = inStock
@@ -36,4 +36,4 @@ my_deck = Deck(bomLevel = 1, batchSize = 12, leadTime = 1, inStock = 13, quantit
 
 my_skateboard = Skateboard(bomLevel = 0, batchSize = 10, leadTime = 2, inStock = 30, quantity = 1 ,wheels = my_wheels, tracks = my_tracks, deck = my_deck, plywood = my_plywood)
 
-my_skateboard.display_info()
+#my_skateboard.display_info()

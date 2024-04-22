@@ -1,4 +1,5 @@
-from dash import Dash, dash_table, html, Input, Output
+from dash import Dash, dash_table, html, Input, Output, State
+from Logics.ProcessData import UpdateTableData
 
 def create_table(NumberOfColumns, Skateboard):
     app = Dash(__name__)
@@ -8,14 +9,14 @@ def create_table(NumberOfColumns, Skateboard):
               "Zapotrzebowanie netto", "Planowanie zamówienia",
               "Planowane przyjęcie zamówień"]
     
-    # Generate column labels
+    # labele tabeli
     column_labels = [f"Week {i+1}" for i in range(NumberOfColumns)]
 
-    # First table
+    # Tabela głowna ( z tygodniami itp)
     table1 = dash_table.DataTable(
         id='table-editing-simple',
         columns=(
-            [{'id': 'Model', 'name': ' ', 'presentation': 'dropdown'}] +  # added 'presentation' key for styling
+            [{'id': 'Model', 'name': ' ', 'presentation': 'dropdown'}] + 
             [{'id': p, 'name': p} for p in column_labels]
         ),
         data=[
@@ -23,15 +24,15 @@ def create_table(NumberOfColumns, Skateboard):
             for label in params
         ],
         editable=True,
-        style_cell={  # Adjusting the width of the first column
+        style_cell={  
             'minWidth': '50px', 'width': '50px', 'maxWidth': '50px',
-            'textAlign': 'center',  # Centering the content of the first column
+            'textAlign': 'center',  
             'overflow': 'hidden',
             'textOverflow': 'ellipsis',
         },
     )
     
-    # Second table
+    # Tabela z bom itp
     labels = ["Czas realizacji =", "Wielkość partii =", "Poziom BOM =", "Na stanie ="]
     initial_values = [Skateboard.leadTime, Skateboard.batchSize, Skateboard.bomLevel, Skateboard.inStock] 
     table2 = dash_table.DataTable(
@@ -44,7 +45,7 @@ def create_table(NumberOfColumns, Skateboard):
             {'Labels': label, 'Value': value} for label, value in zip(labels, initial_values)
         ],
         editable=True,
-        style_cell={'textAlign': 'center'},  # Centering the content of cells
+        style_cell={'textAlign': 'center'},  
     )
 
     app.layout = html.Div([
@@ -58,19 +59,22 @@ def create_table(NumberOfColumns, Skateboard):
         ])
     ])
     
-    # Callback to update table1 data
+    
+    # Callback pierwszej tabeli
     @app.callback(
         Output('table-editing-simple', 'data'),
         Input('table-editing-simple', 'data_previous'),
-        Input('table-editing-simple', 'data'),
+        State('table-editing-simple', 'data'),
     )
-    def update_table1_data(data_previous, data):
-        if data_previous != data:
-            return data
+    def capture_table_data(data_previous, data):
+        if data_previous != data:         
+            updated_data = UpdateTableData(data)
+            return updated_data
         else:
-            return Dash.no_update
+            return data
+   
 
-    # Callback to update table2 data
+    #Callback drugiej tabeli
     @app.callback(
         Output('table-editing-simple-2', 'data'),
         Input('table-editing-simple-2', 'data_previous'),
@@ -82,8 +86,9 @@ def create_table(NumberOfColumns, Skateboard):
         else:
             return Dash.no_update
     
+
     return app
 
 # if __name__ == '__main__':
-#     app = create_table(6)
+#     app = create_table(6, Skateboard)  
 #     app.run_server(debug=True)

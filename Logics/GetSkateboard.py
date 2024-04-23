@@ -4,7 +4,7 @@ from Models.TracksModel import Tracks
 from Models.DeckModel import Deck
 from Models.PlywoodModel import Plywood
 
-
+#Funkcja tworząca obiekty i przypisująca im wartości 
 def getSkate():
     my_plywood = Plywood(bomLevel = 2, batchSize = 14, leadTime = 1, inStock = 4, quantity = 1)
 
@@ -15,4 +15,6 @@ def getSkate():
     my_skateboard = Skateboard(bomLevel = 0, batchSize = 10, leadTime = 2, inStock = 30, quantity = 1 ,
                                wheels = my_wheels, tracks = my_tracks, deck = my_deck, plywood = my_plywood)
     
+    
+    #Zwrócenie obiektu klasy Skateboard z atrybutami
     return my_skateboard

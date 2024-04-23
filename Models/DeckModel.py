@@ -2,6 +2,10 @@ from Models.IComponent import Component
 
 
 class Deck(Component):
+    #Klasa dziedzicząca po interface IComponent
+    
+    
+    #Funkcja do testów
     def display_info(self):
         print("Deck Information:")
         print(f"BOM Level: {self.bom}")

@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+#Interface dla obiektów 
 class Component(ABC):
     def __init__(self, bomLevel, batchSize, leadTime, inStock, quantity):
         self.bom = bomLevel

@@ -2,6 +2,10 @@ from Models.IComponent import Component
 
 
 class Tracks(Component):
+    #Klasa dziedzicząca po interface IComponent
+    
+    
+    #Funkcja do testów
     def display_info(self):
         print("Tracks Information:")
         print(f"BOM Level: {self.bom}")

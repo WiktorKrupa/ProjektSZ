@@ -3,38 +3,74 @@ from Logics import MrpObject
 
 
 def UpdateTableData(data, data2, TableNume):
-    # print (TableNume)
-    # if (int(TableNume) == 5):
+    #Funkcja przyjmuje trzy argumenty 
+    #data - dane z dużej tabeli
+    #data2 - dane z małej tabeli
+    #TableNume -numer sekcji 1-5 patrząc od góry
+    #nazwy zmiennych ofc można pozmieniać 
     
-    #     print(data2)
+    #Funkcja wywoływana jest 5 razy, po razie dla każdej pary tablic(duża - mała)
+    #Rozróżnienie która to tablica jest w zmiennej TableNume
+    #Aktualnie tabele są wypełnione 0 także żeby je początkowo wypełnić można
+    #zrobić jakieś sprawdzenie, że jeżeli wszystkie komórki to 0, to ustawiamy jakieś wartości,
+    #np tak:
     
-    # #dataInJson = json.loads(data)
-    # #print(data)
+    #    dataExample = [
+    # {'Model': 'Całkowite zapotrzebowanie', 'Week 1': '1', 'Week 2': '11', 'Week 3': '77', 'Week 4': '1', 'Week 5': '2', 'Week 6': '7'}, 
+    # {'Model': 'Planowane przyjęcia', 'Week 1': '2', 'Week 2': '22', 'Week 3': '88', 'Week 4': '0', 'Week 5': '7', 'Week 6': '6'}, 
+    # {'Model': 'Przewidywane na stanie', 'Week 1': '3', 'Week 2': '33', 'Week 3': '66', 'Week 4': '2', 'Week 5': '6', 'Week 6': '5'},
+    # {'Model': 'Zapotrzebowanie netto', 'Week 1': '4', 'Week 2': '44', 'Week 3': '5', 'Week 4': '3', 'Week 5': '5', 'Week 6': '4'},
+    # {'Model': 'Planowanie zamówienia', 'Week 1': '5', 'Week 2': '55', 'Week 3': '4', 'Week 4': '3', 'Week 5': '4', 'Week 6': '3'},
+    # {'Model': 'Planowane przyjęcie zamówień', 'Week 1': '6', 'Week 2': '66', 'Week 3': '3', 'Week 4': '5', 'Week 5': '3', 'Week 6': '2'}
+    # ]
+    
+    #return data example
+    
+    # i potem trzeba wykonywać działania jeżeli coś się zmieni w tabeli
+    #Poniżej są moje testy i lekki start zaproponowany przez chata GPT.
+    
+    #dane w "małej" tabeli ustawiane są z góry, w pliku GetSkateboard.py
+    
+    
+    
+    
+    return data
 
-    # #MRP = MrpObject(data)
+    #Moje próby z działaniem na zbiorze danych
+    print (TableNume)
+    if (int(TableNume) == 5):
+    
+        print(data2)
+    
+    #dataInJson = json.loads(data)
+    #print(data)
+
+    #MRP = MrpObject(data)
     
     
-    # print (data2)
-    # #Słowniki do zmiennych - każda zmienna zawiera kolejny wiersz danych
-    # firstRow = data[0]
-    # secondRow = data[1]
-    # thirdRow = data[2]
-    # fourthRow = data[3]
-    # fifthRow = data[4]
-    # sixthRow = data[5]
+    print (data2)
+    #Słowniki do zmiennych - każda zmienna zawiera kolejny wiersz danych
+    firstRow = data[0]
+    secondRow = data[1]
+    thirdRow = data[2]
+    fourthRow = data[3]
+    fifthRow = data[4]
+    sixthRow = data[5]
     
-    # #zapisanie w zmiennej wartosci z pierwszego wiersza, i pierwszego tygodnia
-    # week_1_value = firstRow['Week 1']
-    
-    
-    # #zmiana wartości w komórce 
-    # #pierwszy wiersz drugi tydzień 
-    # #ustawienie wartości week_1_value + 10
-    # firstRow['Week 2'] = str(10+ int(week_1_value ))
-    # data[0] = firstRow
+    #zapisanie w zmiennej wartosci z pierwszego wiersza, i pierwszego tygodnia
+    week_1_value = firstRow['Week 1']
     
     
-    #print(week_1_value)
+    #zmiana wartości w komórce 
+    #pierwszy wiersz drugi tydzień 
+    #ustawienie wartości week_1_value + 10
+    firstRow['Week 2'] = str(10+ int(week_1_value ))
+    data[0] = firstRow
+    
+    
+    print(week_1_value)
+    
+    # Część rozwiązania zaproproponowana przez chat GPT, pokazuje jak można działać na tabelach
     
     params = {item['Labels']: item['Value'] for item in data2}
     

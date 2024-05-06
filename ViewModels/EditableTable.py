@@ -4,6 +4,8 @@ from Logics.ProcessData import UpdateTableData
 def create_table(NumberOfColumns, Skateboard):
     app = Dash(__name__)
     
+    
+    #Zeby wyświetlić te dane trzeba odkomentować fragment poniżej, wtedy dla wszystkich tabel są takie same - funkcja do testów
     dataExample = [
     {'Model': 'Całkowite zapotrzebowanie', 'Week 1': '1', 'Week 2': '11', 'Week 3': '77', 'Week 4': '1', 'Week 5': '2', 'Week 6': '7'}, 
     {'Model': 'Planowane przyjęcia', 'Week 1': '2', 'Week 2': '22', 'Week 3': '88', 'Week 4': '0', 'Week 5': '7', 'Week 6': '6'}, 
@@ -11,7 +13,7 @@ def create_table(NumberOfColumns, Skateboard):
     {'Model': 'Zapotrzebowanie netto', 'Week 1': '4', 'Week 2': '44', 'Week 3': '5', 'Week 4': '3', 'Week 5': '5', 'Week 6': '4'},
     {'Model': 'Planowanie zamówienia', 'Week 1': '5', 'Week 2': '55', 'Week 3': '4', 'Week 4': '3', 'Week 5': '4', 'Week 6': '3'},
     {'Model': 'Planowane przyjęcie zamówień', 'Week 1': '6', 'Week 2': '66', 'Week 3': '3', 'Week 4': '5', 'Week 5': '3', 'Week 6': '2'}
-]
+    ]
 
     def generate_table_pair(id_suffix, initial_values, section_title):
         params = [
@@ -26,9 +28,15 @@ def create_table(NumberOfColumns, Skateboard):
             id=f'table-editing-simple-{id_suffix}',
             columns=([{'id': 'Model', 'name': ' '}]+
                      [{'id': p, 'name': p} for p in column_labels]),
-            # data=[dict(Model=label, **{param: 0 for param in column_labels})
-            #       for label in params],
-            data = dataExample,
+            
+            
+            
+            data=[dict(Model=label, **{param: 0 for param in column_labels})
+                  for label in params],
+            #data = dataExample,
+            
+            
+            
             editable=True,
             style_cell={
                 'minWidth': '50px', 'width': '50px', 'maxWidth': '50px',

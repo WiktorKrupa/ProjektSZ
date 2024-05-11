@@ -99,8 +99,9 @@ def create_table(NumberOfColumns, Skateboard):
     return app
 
 def update_data(data_previous1, data_previous2, data1, data2, suffix):
+    edited = False
     if data_previous1 != data1 or data_previous2 != data2:
-        updated_data1 = UpdateTableData(data1, data2, suffix)  # Pass suffix to your function
-        return updated_data1, data2
-    else:
-        return data1, data2
+        edited = True
+    updated_data1 = UpdateTableData(data1, data2, suffix, edited)  # Pass suffix to your function
+    return updated_data1, data2
+

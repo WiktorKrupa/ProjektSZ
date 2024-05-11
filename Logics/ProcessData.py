@@ -2,11 +2,12 @@ import json
 from Logics import MrpObject
 
 
-def UpdateTableData(data, data2, TableNume):
+def UpdateTableData(data, data2, TableNume, edited):
     #Funkcja przyjmuje trzy argumenty 
     #data - dane z dużej tabeli
     #data2 - dane z małej tabeli
     #TableNume -numer sekcji 1-5 patrząc od góry
+    #edited - czy w tej tabeli dane się zmieniły
     #nazwy zmiennych ofc można pozmieniać 
     
     #Funkcja wywoływana jest 5 razy, po razie dla każdej pary tablic(duża - mała)
@@ -33,7 +34,8 @@ def UpdateTableData(data, data2, TableNume):
     
     
     
-    
+    print (data2)
+    print('\n')
     return data
 
     #Moje próby z działaniem na zbiorze danych

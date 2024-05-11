@@ -108,3 +108,5 @@ def UpdateTableData(data, data2, TableNume, edited):
     #     for row in data
     # ]
     # return updated_data
+def UpdateGHP(data, data_previous):
+    return data

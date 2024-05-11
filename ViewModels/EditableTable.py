@@ -1,6 +1,25 @@
 from dash import Dash, dash_table, html, Input, Output, State
-from Logics.ProcessData import UpdateTableData
+from Logics.ProcessData import UpdateTableData, UpdateGHP
 
+def create_ghp_table():
+    column_labels = [f'Tydzien: {i + 1}' for i in range(10)]  # For 10 weeks
+    return dash_table.DataTable(
+        id='ghp-table',
+        columns=(
+            [{'id': 'Description', 'name': ''}] +
+            [{'id': f'Week {i+1}', 'name': f'Tydzien: {i+1}'} for i in range(10)]
+        ),
+        data=[
+            {'Description': 'Przewidywany popyt'},
+            {'Description': 'Produkcja'},
+            {'Description': 'Dostępne'},
+            {'Description': 'Czas realizacji ='},
+            {'Description': 'Na stanie ='}
+        ],
+        editable=True,  # Make the table editable
+        style_table={'height': '300px', 'overflowY': 'auto'},
+        style_cell={'textAlign': 'center', 'minWidth': '100px', 'width': '100px', 'maxWidth': '100px'},
+    )
 def create_table(NumberOfColumns, Skateboard):
     app = Dash(__name__)
     
@@ -82,20 +101,35 @@ def create_table(NumberOfColumns, Skateboard):
         setattr(app, f'section{suffix}', generate_table_pair(suffix, initial_values, title))
 
     app.layout = html.Div([
-        getattr(app, f'section{suffix}') for suffix, _, _ in sections
-    ], style={'width': '90%', 'margin': 'auto'})
-
+        html.H1('GHP Table', style={'textAlign': 'center'}),
+        create_ghp_table(),
+        html.Hr(),  # Separator
+        html.Div([
+            getattr(app, f'section{suffix}') for suffix, _, _ in sections
+        ], style={'width': '90%', 'margin': 'auto'})
+    ])
     # Update callbacks to include suffix
     for suffix, _, _ in sections:
         app.callback(
             Output(f'table-editing-simple-{suffix}', 'data'),
             Output(f'table-editing-simple-2-{suffix}', 'data'),
-            Input(f'table-editing-simple-{suffix}', 'data_previous'),
-            Input(f'table-editing-simple-2-{suffix}', 'data_previous'),
-            State(f'table-editing-simple-{suffix}', 'data'),
-            State(f'table-editing-simple-2-{suffix}', 'data')
-        )(lambda data_previous1, data_previous2, data1, data2, suffix=suffix: update_data(data_previous1, data_previous2, data1, data2, suffix))
+            Input(f'table-editing-simple-{suffix}', 'data'),
+            Input(f'table-editing-simple-2-{suffix}', 'data'),
+            State(f'table-editing-simple-{suffix}', 'data_previous'),
+            State(f'table-editing-simple-2-{suffix}', 'data_previous')
+        )(lambda data1, data2, data_previous1, data_previous2, suffix=suffix: update_data(data_previous1, data_previous2, data1, data2, suffix))
 
+
+    @app.callback(
+    Output('ghp-table', 'data'),
+    Input('ghp-table', 'data'),
+    State('ghp-table', 'data_previous')
+    )
+    def update_ghp(data, data_previous):
+        if data != data_previous:
+            updated_data = UpdateGHP(data, data_previous)  # Implement this function according to your logic
+            return updated_data
+        return data
     return app
 
 def update_data(data_previous1, data_previous2, data1, data2, suffix):

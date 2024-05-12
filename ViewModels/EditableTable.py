@@ -46,16 +46,9 @@ def create_table(NumberOfColumns, Skateboard):
         table1 = dash_table.DataTable(
             id=f'table-editing-simple-{id_suffix}',
             columns=([{'id': 'Model', 'name': ' '}]+
-                     [{'id': p, 'name': p} for p in column_labels]),
-            
-            
-            
+                    [{'id': p, 'name': p} for p in column_labels]),
             data=[dict(Model=label, **{param: 0 for param in column_labels})
-                  for label in params],
-            #data = dataExample,
-            
-            
-            
+                for label in params],
             editable=True,
             style_cell={
                 'minWidth': '50px', 'width': '50px', 'maxWidth': '50px',
@@ -64,7 +57,10 @@ def create_table(NumberOfColumns, Skateboard):
             },
         )
 
-        labels = ["Czas realizacji =", "Wielkość partii =", "Poziom BOM =", "Na stanie ="]
+        # Include 'Update' label and default value in the initial values
+        labels = ["Czas realizacji =", "Wielkość partii =", "Poziom BOM =", "Na stanie =", "Update ="]
+        default_values = initial_values + ['0']  # Add default value for 'Update'
+
         table2 = dash_table.DataTable(
             id=f'table-editing-simple-2-{id_suffix}',
             columns=[
@@ -72,7 +68,7 @@ def create_table(NumberOfColumns, Skateboard):
                 {'id': 'Value', 'name': 'Value'}
             ],
             data=[
-                {'Labels': label, 'Value': value} for label, value in zip(labels, initial_values)
+                {'Labels': label, 'Value': value} for label, value in zip(labels, default_values)
             ],
             editable=True,
             style_cell={'textAlign': 'center'},
@@ -89,6 +85,8 @@ def create_table(NumberOfColumns, Skateboard):
                 table2
             ])
         ], className="section")
+
+# Then adjust the initial_values in your section setup to include this new value.
 
     sections = [
         ('1', [Skateboard.leadTime, Skateboard.batchSize, Skateboard.bomLevel, Skateboard.inStock], "Skateboard"),

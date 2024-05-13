@@ -6,9 +6,3 @@ Skateboard = getSkate()
 if __name__ == '__main__':
     app = create_table(6, Skateboard)
     app.run_server(debug=True)
-
-
-
-
-
-

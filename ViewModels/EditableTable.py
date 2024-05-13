@@ -2,12 +2,12 @@ from dash import Dash, dash_table, html, Input, Output, State
 from Logics.ProcessData import UpdateTableData, UpdateGHP
 
 def create_ghp_table():
-    column_labels = [f'Tydzien: {i + 1}' for i in range(10)]  # For 10 weeks
+    column_labels = [f'Tydzien: {i + 1}' for i in range(6)]  # For 10 weeks
     return dash_table.DataTable(
         id='ghp-table',
         columns=(
             [{'id': 'Description', 'name': ''}] +
-            [{'id': f'Week {i+1}', 'name': f'Tydzien: {i+1}'} for i in range(10)]
+            [{'id': f'Week {i+1}', 'name': f'Tydzien: {i+1}'} for i in range(6)]
         ),
         data=[
             {'Description': 'Przewidywany popyt'},
@@ -22,7 +22,6 @@ def create_ghp_table():
     )
 def create_table(NumberOfColumns, Skateboard):
     app = Dash(__name__)
-    
     
     #Zeby wyświetlić te dane trzeba odkomentować fragment poniżej, wtedy dla wszystkich tabel są takie same - funkcja do testów
     dataExample = [
@@ -115,7 +114,7 @@ def create_table(NumberOfColumns, Skateboard):
             Input(f'table-editing-simple-2-{suffix}', 'data'),
             State(f'table-editing-simple-{suffix}', 'data_previous'),
             State(f'table-editing-simple-2-{suffix}', 'data_previous')
-        )(lambda data1, data2, data_previous1, data_previous2, suffix=suffix: update_data(data_previous1, data_previous2, data1, data2, suffix))
+        )(lambda data1, data2, data_previous1, data_previous2, suffix=suffix: update_data(data_previous1, data_previous2, data1, data2, int(suffix)))
 
 
     @app.callback(
@@ -130,10 +129,10 @@ def create_table(NumberOfColumns, Skateboard):
         return data
     return app
 
-def update_data(data_previous1, data_previous2, data1, data2, suffix):
+def update_data(data_previous1, data_previous2, data1, data2, week):
     edited = False
     if data_previous1 != data1 or data_previous2 != data2:
         edited = True
-    updated_data1 = UpdateTableData(data1, data2, suffix, edited)  # Pass suffix to your function
+    updated_data1 = UpdateTableData(data1, data2, week, edited)  # Pass suffix to your function
     return updated_data1, data2
 

@@ -121,37 +121,8 @@ def UpdateTableData(data: List[Dict[str, str]], data2: List[Dict[str, str]], Tab
         "Na stanie": data2[4]
     }
 
-    # Pobieranie wartości zapotrzebowania na poszczególne komponenty w danym tygodniu
-    week_demand = {}
-    for component, ghp_row in ghp_data.items():
-        week_demand[component] = {
-            f"Week {week}": int(ghp_row.get(f"Week {week}", 0)) for week in range(1, 7)
-        }
-
     # Aktualizacja danych w zależności od tabeli (BOM 0 - Skateboard, BOM 1 - Wheels, Tracks, Deck, BOM 2 - Plywood)
     if TableNume == "0":
-        # Aktualizacja dla Skateboard
-        # Pobieranie danych z GHP
-        demand = int(ghp_data["Przewidywany popyt"].get(f"Week {week}", 0))
-        lead_time = int(ghp_data["Czas realizacji"].get(f"Week {week}", 0))
-        on_hand = int(ghp_data["Na stanie"].get(f"Week {week}", 0))
-
-        # Obliczenie planowanego przyjęcia zamówień
-        if week > lead_time:
-            planned_receipts = demand
-        else:
-            planned_receipts = 0
-
-        # Aktualizacja przewidywanego stanu na koniec tygodnia
-        predicted_on_hand = max(0, on_hand + planned_receipts)
-
-        # Obliczenie zapotrzebowania netto
-        net_requirements = max(0, demand - predicted_on_hand)
-
-        # Aktualizacja danych w tabeli dla Skateboardu
-        data[0][f"Week {week}"] = str(planned_receipts)
-        data[2][f"Week {week}"] = str(predicted_on_hand)
-        data[3][f"Week {week}"] = str(net_requirements)
         pass
     elif TableNume == "1":
         # Aktualizacja dla komponentów z BOM 1: Wheels, Tracks, Deck
@@ -166,5 +137,29 @@ def UpdateTableData(data: List[Dict[str, str]], data2: List[Dict[str, str]], Tab
     return data
 
 
-def UpdateGHP(data, data_previous):
-    return data
+def UpdateGHP(data_ghp, data_time_stock, data_previous_ghp, data_previous_time_stock):
+        
+    na_stanie = data_time_stock[1].get('Value', 0)
+    data_ghp[2]['Week 1'] = na_stanie
+
+    
+    # Uzupełnienie danych dla wszystkich tygodni
+    for week in range(2, 7):
+        if f'Week {week}' not in data_ghp[0]:
+            data_ghp[0][f'Week {week}'] = 0
+        if f'Week {week}' not in data_ghp[1]:
+            data_ghp[1][f'Week {week}'] = 0
+        if f'Week {week}' not in data_ghp[2]:
+            data_ghp[2][f'Week {week}'] = 0
+            
+    # Dostępne (t) = Dostępne (t-1) - Przewidywany popyt (t) + Produkcja (t)
+    for week in range(2, 7):
+        prev_dostepne = int(data_ghp[2][f'Week {week-1}'])
+        przewidywany_popyt = int(data_ghp[0][f'Week {week}'])
+        prod = int(data_ghp[1][f'Week {week}'])
+        dostepne = prev_dostepne - przewidywany_popyt + prod
+        data_ghp[2][f'Week {week}'] = str(dostepne)
+    
+    updated_data_ghp = data_ghp
+    updated_data_time_stock = []
+    return updated_data_ghp, updated_data_time_stock

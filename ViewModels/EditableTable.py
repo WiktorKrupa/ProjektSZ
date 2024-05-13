@@ -2,36 +2,60 @@ from dash import Dash, dash_table, html, Input, Output, State
 from Logics.ProcessData import UpdateTableData, UpdateGHP
 
 def create_ghp_table():
-    column_labels = [f'Tydzien: {i + 1}' for i in range(6)]  # For 10 weeks
-    return dash_table.DataTable(
-        id='ghp-table',
+    ghp_table = dash_table.DataTable(
+        id='ghp-table',  # Corrected ID for the main GHP table
         columns=(
             [{'id': 'Description', 'name': ''}] +
-            [{'id': f'Week {i+1}', 'name': f'Tydzien: {i+1}'} for i in range(6)]
+            [{'id': f'Week {i+1}', 'name': f'Week {i+1}'} for i in range(6)]
         ),
         data=[
             {'Description': 'Przewidywany popyt'},
             {'Description': 'Produkcja'},
-            {'Description': 'Dostępne'},
-            {'Description': 'Czas realizacji ='},
-            {'Description': 'Na stanie ='}
+            {'Description': 'Dostępne'}
         ],
-        editable=True,  # Make the table editable
-        style_table={'height': '300px', 'overflowY': 'auto'},
+        editable=True,
+        style_table={'height': '200px', 'overflowY': 'auto'},
         style_cell={'textAlign': 'center', 'minWidth': '100px', 'width': '100px', 'maxWidth': '100px'},
     )
+    time_stock_table = dash_table.DataTable(
+        id='ghp-time-stock-table',
+        columns=[
+            {'id': 'Description', 'name': ''},
+            {'id': 'Value', 'name': 'Value'}
+        ],
+        data=[
+            {'Description': 'Czas realizacji'},
+            {'Description': 'Na stanie'}
+        ],
+        editable=True,
+        style_table={'height': '100px', 'overflowY': 'auto'},
+        style_cell={'textAlign': 'center', 'minWidth': '100px', 'width': '100px', 'maxWidth': '100px'},
+    )
+    return html.Div([
+        html.H3('GHP Table', style={'textAlign': 'center'}),
+        html.Div([
+            html.Div([
+                html.H4('Przewidywany popyt, Produkcja i Dostępne', style={'textAlign': 'center'}),
+                ghp_table
+            ], style={'flex': '2'}),
+            html.Div([
+                html.H4('Czas realizacji i Na stanie', style={'textAlign': 'center'}),
+                time_stock_table
+            ], style={'flex': '1', 'margin-right': '20px'}),
+        ], style={'display': 'flex'}),
+    ])
 def create_table(NumberOfColumns, Skateboard):
     app = Dash(__name__)
     
     #Zeby wyświetlić te dane trzeba odkomentować fragment poniżej, wtedy dla wszystkich tabel są takie same - funkcja do testów
-    dataExample = [
-    {'Model': 'Całkowite zapotrzebowanie', 'Week 1': '1', 'Week 2': '11', 'Week 3': '77', 'Week 4': '1', 'Week 5': '2', 'Week 6': '7'}, 
-    {'Model': 'Planowane przyjęcia', 'Week 1': '2', 'Week 2': '22', 'Week 3': '88', 'Week 4': '0', 'Week 5': '7', 'Week 6': '6'}, 
-    {'Model': 'Przewidywane na stanie', 'Week 1': '3', 'Week 2': '33', 'Week 3': '66', 'Week 4': '2', 'Week 5': '6', 'Week 6': '5'},
-    {'Model': 'Zapotrzebowanie netto', 'Week 1': '4', 'Week 2': '44', 'Week 3': '5', 'Week 4': '3', 'Week 5': '5', 'Week 6': '4'},
-    {'Model': 'Planowanie zamówienia', 'Week 1': '5', 'Week 2': '55', 'Week 3': '4', 'Week 4': '3', 'Week 5': '4', 'Week 6': '3'},
-    {'Model': 'Planowane przyjęcie zamówień', 'Week 1': '6', 'Week 2': '66', 'Week 3': '3', 'Week 4': '5', 'Week 5': '3', 'Week 6': '2'}
-    ]
+    # dataExample = [
+    # {'Model': 'Całkowite zapotrzebowanie', 'Week 1': '1', 'Week 2': '11', 'Week 3': '77', 'Week 4': '1', 'Week 5': '2', 'Week 6': '7'}, 
+    # {'Model': 'Planowane przyjęcia', 'Week 1': '2', 'Week 2': '22', 'Week 3': '88', 'Week 4': '0', 'Week 5': '7', 'Week 6': '6'}, 
+    # {'Model': 'Przewidywane na stanie', 'Week 1': '3', 'Week 2': '33', 'Week 3': '66', 'Week 4': '2', 'Week 5': '6', 'Week 6': '5'},
+    # {'Model': 'Zapotrzebowanie netto', 'Week 1': '4', 'Week 2': '44', 'Week 3': '5', 'Week 4': '3', 'Week 5': '5', 'Week 6': '4'},
+    # {'Model': 'Planowanie zamówienia', 'Week 1': '5', 'Week 2': '55', 'Week 3': '4', 'Week 4': '3', 'Week 5': '4', 'Week 6': '3'},
+    # {'Model': 'Planowane przyjęcie zamówień', 'Week 1': '6', 'Week 2': '66', 'Week 3': '3', 'Week 4': '5', 'Week 5': '3', 'Week 6': '2'}
+    # ]
 
     def generate_table_pair(id_suffix, initial_values, section_title):
         params = [
@@ -120,19 +144,21 @@ def create_table(NumberOfColumns, Skateboard):
     @app.callback(
     Output('ghp-table', 'data'),
     Input('ghp-table', 'data'),
-    State('ghp-table', 'data_previous')
+    Input('ghp-time-stock-table', 'data'),
+    State('ghp-table', 'data_previous'),
+    State('ghp-time-stock-table', 'data_previous'),
     )
-    def update_ghp(data, data_previous):
-        if data != data_previous:
-            updated_data = UpdateGHP(data, data_previous)  # Implement this function according to your logic
-            return updated_data
-        return data
+    def update_ghp(data_ghp, data_time_stock, data_previous_ghp, data_previous_time_stock):
+        if data_ghp != data_previous_ghp or data_time_stock != data_previous_time_stock:
+            updated_data_ghp, updated_data_time_stock = UpdateGHP(data_ghp, data_time_stock, data_previous_ghp, data_previous_time_stock)
+            return updated_data_ghp
+        return data_ghp
     return app
 
 def update_data(data_previous1, data_previous2, data1, data2, week):
     edited = False
     if data_previous1 != data1 or data_previous2 != data2:
         edited = True
-    updated_data1 = UpdateTableData(data1, data2, week, edited)  # Pass suffix to your function
+    updated_data1 = UpdateTableData(data1, data2, '0', edited, week)  # Pass suffix to your function
     return updated_data1, data2
 

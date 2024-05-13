@@ -70,7 +70,7 @@ def create_table(NumberOfColumns, Skateboard):
             id=f'table-editing-simple-{id_suffix}',
             columns=([{'id': 'Model', 'name': ' '}]+
                     [{'id': p, 'name': p} for p in column_labels]),
-            data=[dict(Model=label, **{param: 0 for param in column_labels})
+            data=[{**dict(Model=label), **{param: 0 for param in column_labels}}
                 for label in params],
             editable=True,
             style_cell={
@@ -155,10 +155,10 @@ def create_table(NumberOfColumns, Skateboard):
         return data_ghp
     return app
 
-def update_data(data_previous1, data_previous2, data1, data2, week):
+def update_data(data_previous1, data_previous2, data1, data2, TableNume):
     edited = False
     if data_previous1 != data1 or data_previous2 != data2:
         edited = True
-    updated_data1 = UpdateTableData(data1, data2, '0', edited, week)  # Pass suffix to your function
+    updated_data1 = UpdateTableData(data1, data2, TableNume)  # Pass suffix to your function
     return updated_data1, data2
 

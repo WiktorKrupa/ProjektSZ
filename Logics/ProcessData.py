@@ -1,5 +1,4 @@
-import json
-from Logics import MrpObject
+
 
 
 # def UpdateTableData(data, data2, TableNume, edited):
@@ -109,33 +108,9 @@ from Logics import MrpObject
     # return updated_data
     
     # Extracting parameters from data2
+import json
+from Logics import MrpObject
 from typing import List, Dict
-
-def UpdateTableData(data: List[Dict[str, str]], data2: List[Dict[str, str]], TableNume: str, edited: bool, week: int) -> List[Dict[str, str]]:
-    # Pobieranie danych z tabeli GHP
-    ghp_data = {
-        "Przewidywany popyt": data2[0],
-        "Produkcja": data2[1],
-        "Dostępne": data2[2],
-        "Czas realizacji": data2[3],
-        "Na stanie": data2[4]
-    }
-
-    # Aktualizacja danych w zależności od tabeli (BOM 0 - Skateboard, BOM 1 - Wheels, Tracks, Deck, BOM 2 - Plywood)
-    if TableNume == "0":
-        pass
-    elif TableNume == "1":
-        # Aktualizacja dla komponentów z BOM 1: Wheels, Tracks, Deck
-        # Tutaj wykonaj odpowiednie operacje na danych dotyczących Wheels, Tracks, Deck
-        pass
-    elif TableNume == "2":
-        # Aktualizacja dla Plywood (BOM 2)
-        # Tutaj wykonaj odpowiednie operacje na danych dotyczących Plywood
-        pass
-
-    # Zwróć zaktualizowane dane
-    return data
-
 
 def UpdateGHP(data_ghp, data_time_stock, data_previous_ghp, data_previous_time_stock):
         
@@ -163,3 +138,31 @@ def UpdateGHP(data_ghp, data_time_stock, data_previous_ghp, data_previous_time_s
     updated_data_ghp = data_ghp
     updated_data_time_stock = []
     return updated_data_ghp, updated_data_time_stock
+
+def UpdateTableData(data: List[Dict[str, str]], data2: List[Dict[str, str]], TableNume: str) -> List[Dict[str, str]]:
+
+    # Aktualizacja danych w zależności od tabeli (BOM 0 - Skateboard, BOM 1 - Wheels, Tracks, Deck, BOM 2 - Plywood)
+    # Aktualizacja dla komponentów z BOM 0: 
+    if TableNume == "0":
+        na_stanie_skateboard = data2[3].get('Value', 0)
+        data[2]['Week 1'] = na_stanie_skateboard
+        czas_realizacji = UpdateGHP.data_time_stock[0].get('Value', 0)
+        
+        for i in range(2,7):
+            # popyt - popyt netto, czyli ile chcemy wyprodukować
+            popyt = UpdateGHP.data_ghp[1][f'Week {i}'].get('Value', 0)
+            data[0][f'Week {i - int(czas_realizacji)}'] = popyt
+
+    elif TableNume == "1":
+        # Aktualizacja dla komponentów z BOM 1: Wheels, Tracks, Deck
+        # Tutaj wykonaj odpowiednie operacje na danych dotyczących Wheels, Tracks, Deck
+        pass
+    elif TableNume == "2":
+        # Aktualizacja dla Plywood (BOM 2)
+        # Tutaj wykonaj odpowiednie operacje na danych dotyczących Plywood
+        pass
+
+    # Zwróć zaktualizowane dane
+    return data
+
+

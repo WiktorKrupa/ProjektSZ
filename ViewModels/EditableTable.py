@@ -2,6 +2,10 @@ from dash import Dash, dash_table, html, Input, Output, State
 from Logics.ProcessData import UpdateTableData, UpdateGHP
 
 def create_ghp_table():
+    
+    default_lead_time = 1
+    default_in_stock = 10
+    
     ghp_table = dash_table.DataTable(
         id='ghp-table',  # Corrected ID for the main GHP table
         columns=(
@@ -24,8 +28,8 @@ def create_ghp_table():
             {'id': 'Value', 'name': 'Value'}
         ],
         data=[
-            {'Description': 'Czas realizacji'},
-            {'Description': 'Na stanie'}
+            {'Description': 'Czas realizacji', 'Value': default_lead_time},
+            {'Description': 'Na stanie', 'Value': default_in_stock}
         ],
         editable=True,
         style_table={'height': '100px', 'overflowY': 'auto'},
@@ -109,8 +113,6 @@ def create_table(NumberOfColumns, Skateboard):
             ])
         ], className="section")
 
-# Then adjust the initial_values in your section setup to include this new value.
-
     sections = [
         ('1', [Skateboard.leadTime, Skateboard.batchSize, Skateboard.bomLevel, Skateboard.inStock], "Skateboard"),
         ('2', [Skateboard.wheels.leadTime, Skateboard.wheels.batchSize, Skateboard.wheels.bom, Skateboard.wheels.inStock], "Wheels"),
@@ -122,7 +124,6 @@ def create_table(NumberOfColumns, Skateboard):
         setattr(app, f'section{suffix}', generate_table_pair(suffix, initial_values, title))
 
     app.layout = html.Div([
-        html.H1('GHP Table', style={'textAlign': 'center'}),
         create_ghp_table(),
         html.Hr(),  # Separator
         html.Div([
@@ -138,7 +139,7 @@ def create_table(NumberOfColumns, Skateboard):
             Input(f'table-editing-simple-2-{suffix}', 'data'),
             State(f'table-editing-simple-{suffix}', 'data_previous'),
             State(f'table-editing-simple-2-{suffix}', 'data_previous')
-        )(lambda data1, data2, data_previous1, data_previous2, suffix=suffix: update_data(data_previous1, data_previous2, data1, data2, int(suffix)))
+        )(lambda data1, data2, data_previous1, data_previous2, updated_data_ghp=None, updated_data_time_stock=None, suffix=suffix: update_data(data_previous1, data_previous2, data1, data2, updated_data_ghp, updated_data_time_stock, int(suffix)))
 
 
     @app.callback(
@@ -148,17 +149,19 @@ def create_table(NumberOfColumns, Skateboard):
     State('ghp-table', 'data_previous'),
     State('ghp-time-stock-table', 'data_previous'),
     )
+    
     def update_ghp(data_ghp, data_time_stock, data_previous_ghp, data_previous_time_stock):
         if data_ghp != data_previous_ghp or data_time_stock != data_previous_time_stock:
             updated_data_ghp, updated_data_time_stock = UpdateGHP(data_ghp, data_time_stock, data_previous_ghp, data_previous_time_stock)
             return updated_data_ghp
         return data_ghp
+    
+    def update_data(data_previous1, data_previous2, data1, data2, updated_data_ghp, updated_data_time_stock, TableNume):
+        edited = False
+        if data_previous1 != data1 or data_previous2 != data2:
+            edited = True
+        updated_data1 = UpdateTableData(data1, data2, TableNume, updated_data_ghp, updated_data_time_stock)  # Pass suffix to your function
+        return updated_data1, data2
+    
     return app
-
-def update_data(data_previous1, data_previous2, data1, data2, TableNume):
-    edited = False
-    if data_previous1 != data1 or data_previous2 != data2:
-        edited = True
-    updated_data1 = UpdateTableData(data1, data2, TableNume)  # Pass suffix to your function
-    return updated_data1, data2
 
